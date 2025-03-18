@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Випадкове рівняння</title>
+    <title>Генератор рівнянь та графіків</title>
     <style>
+        /* Загальні стилі */
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f0f4f8;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
             display: flex;
@@ -15,151 +16,57 @@
             align-items: center;
             height: 100vh;
             overflow: hidden;
-            transition: all 0.3s ease;
+            flex-direction: column;
         }
 
         .container {
-            background: linear-gradient(135deg, #6e7bff, #62d4f2);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
+            text-align: center;
             max-width: 600px;
-            text-align: center;
-            opacity: 0;
-            animation: fadeIn 1s forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        h2 {
-            color: #fff;
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
-
-        p {
-            color: #fff;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-
-        input {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            background-color: #fff;
-            color: #333;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        button {
-            padding: 12px 25px;
-            background-color: #62d4f2;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 5px;
-        }
-
-        button:hover {
-            background-color: #4bb6d4;
-        }
-
-        .intro-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            opacity: 1;
-            animation: fadeOutIntro 2s 3s forwards;
-        }
-
-        @keyframes fadeOutIntro {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-
-        .intro-text {
-            color: white;
-            font-size: 36px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .start-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #ffcc00;
+        .main-button {
+            background-color: yellow;
             padding: 20px 40px;
             font-size: 24px;
-            color: #fff;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+            margin: 20px;
+            border: none;
         }
 
-        .start-button:hover {
-            background-color: #ffb300;
-        }
-
-        .menu-options {
-            display: none;
+        .choice-buttons {
+            display: flex;
             justify-content: center;
-            align-items: center;
-            text-align: center;
-            margin-top: 20px;
+            gap: 20px;
         }
 
-        .menu-option {
-            background-color: #62d4f2;
-            color: white;
-            padding: 20px;
-            margin: 10px;
-            border-radius: 12px;
-            cursor: pointer;
+        .choice-button {
+            background-color: #4CAF50;
+            padding: 20px 40px;
             font-size: 20px;
-            transition: background-color 0.3s ease;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
         }
 
-        .menu-option:hover {
-            background-color: #4bb6d4;
+        .choice-button:hover {
+            background-color: #45a049;
         }
 
         .settings-button {
-            position: absolute;
-            top: 10px;
-            right: 50px;
-            font-size: 18px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #555;
             color: white;
+            padding: 15px;
+            border-radius: 50%;
             cursor: pointer;
-            display: flex;
-            align-items: center;
+            font-size: 20px;
         }
 
-        .settings-button:hover {
-            color: #ff7043;
-        }
-
-        .settings-window {
+        .settings-modal {
             display: none;
             position: fixed;
             top: 50%;
@@ -167,166 +74,211 @@
             transform: translate(-50%, -50%);
             background-color: #fff;
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
-            width: 300px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
 
-        .settings-window input {
+        .settings-modal.active {
+            display: block;
+        }
+
+        .button-close {
+            background-color: red;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .language-selector, .statistics {
+            margin: 20px 0;
+        }
+
+        .back-to-main {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Стилі для завдання з рівняннями */
+        .equation-container, .graph-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .equation-task, .graph-task {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .task-input {
+            padding: 10px;
+            font-size: 16px;
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
+            margin-bottom: 20px;
+            border-radius: 5px;
             border: 1px solid #ccc;
         }
 
-        .settings-window button {
-            padding: 12px;
+        .task-button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .task-button:hover {
+            background-color: #218838;
+        }
+
+        /* Стилі для графіків */
+        .graph {
+            width: 100%;
+            height: 300px;
             margin-top: 20px;
-            background-color: #62d4f2;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+            background-color: #e0e0e0;
         }
-
-        .settings-window button:hover {
-            background-color: #4bb6d4;
-        }
-
-        .graph-window {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
-            width: 350px;
-            text-align: center;
-        }
-
-        .graph-button {
-            background-color: #62d4f2;
-            color: white;
-            font-size: 18px;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .graph-button:hover {
-            background-color: #4bb6d4;
-        }
-
-        .back-to-menu {
-            margin-top: 20px;
-            background-color: #ff7043;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .back-to-menu:hover {
-            background-color: #e64a19;
-        }
-
     </style>
 </head>
 <body>
 
-    <div class="intro-screen">
-        <div class="intro-text">Генератор рівнянь [.]</div>
+    <!-- Кнопка для початку -->
+    <div class="container">
+        <button class="main-button" onclick="showChoices()">Почати</button>
     </div>
 
-    <!-- Кнопка Почати -->
-    <div class="start-button" id="startButton" onclick="showMenuOptions()">Почати</div>
-
-    <!-- Вибір завдання -->
-    <div class="menu-options" id="menuOptions">
-        <div class="menu-option" onclick="startEquationTask()">Рівняння</div>
-        <div class="menu-option" onclick="startGraphTask()">Графіки</div>
+    <!-- Вибір між Рівнянням і Графіками -->
+    <div class="container choice-buttons" id="choices-container">
+        <button class="choice-button" onclick="showEquations()">Рівняння</button>
+        <button class="choice-button" onclick="showGraphs()">Графіки</button>
     </div>
 
-    <!-- Налаштування -->
-    <div class="settings-button" onclick="toggleSettings()">⚙️ Налаштування</div>
-
-    <div class="settings-window" id="settingsWindow">
-        <button onclick="goToMainMenu()">Головне меню</button>
-        <button onclick="closeSettings()">Закрити</button>
+    <!-- Завдання з Рівняннями -->
+    <div class="equation-container" id="equation-container">
+        <div class="equation-task" id="equation-task"></div>
+        <input type="text" id="equation-answer" class="task-input" placeholder="Введіть відповідь">
+        <button class="task-button" onclick="checkEquationAnswer()">Перевірити</button>
+        <button class="task-button" onclick="generateEquation()">Нове рівняння</button>
     </div>
 
-    <!-- Завдання для рівнянь -->
-    <div id="equationTask" style="display:none;">
-        <h2>Розв'язати рівняння: x + 5 = 10</h2>
-        <input type="text" id="equationAnswer" placeholder="Введіть відповідь">
-        <button onclick="checkEquationAnswer()">Перевірити</button>
-        <p id="equationResult"></p>
+    <!-- Завдання з Графіками -->
+    <div class="graph-container" id="graph-container">
+        <div class="graph" id="graph"></div>
+        <input type="text" id="graph-answer" class="task-input" placeholder="Введіть функцію графіка">
+        <button class="task-button" onclick="checkGraphAnswer()">Перевірити</button>
     </div>
 
-    <!-- Завдання для графіків -->
-    <div id="graphTask" style="display:none;">
-        <h2>Намалюйте графік функції y = x²</h2>
-        <input type="text" id="graphAnswer" placeholder="Введіть функцію">
-        <button onclick="checkGraphAnswer()">Перевірити</button>
-        <p id="graphResult"></p>
+    <!-- Кнопка налаштувань -->
+    <button class="settings-button" onclick="toggleSettings()">⚙️ Налаштування</button>
+
+    <!-- Модальне вікно для налаштувань -->
+    <div class="settings-modal" id="settings-modal">
+        <h3>Налаштування</h3>
+        <div class="language-selector">
+            <label for="language">Вибір мови:</label>
+            <select id="language" onchange="changeLanguage()">
+                <option value="uk">Українська</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+        <div class="statistics">
+            <p>Правильні відповіді: <span id="correct-stat">0</span></p>
+            <p>Неправильні відповіді: <span id="incorrect-stat">0</span></p>
+            <p>Середній коефіцієнт правильних відповідей: <span id="avg-stat">0</span></p>
+        </div>
+        <button class="back-to-main" onclick="backToMain()">Головне меню</button>
+        <button class="button-close" onclick="closeSettings()">Закрити</button>
     </div>
 
     <script>
-        function showMenuOptions() {
-            document.getElementById('startButton').style.display = 'none';
-            document.getElementById('menuOptions').style.display = 'flex';
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+
+        function showChoices() {
+            document.querySelector(".container").style.display = "none";
+            document.getElementById("choices-container").style.display = "flex";
         }
 
-        function startEquationTask() {
-            document.getElementById('menuOptions').style.display = 'none';
-            document.getElementById('equationTask').style.display = 'block';
+        function showEquations() {
+            document.getElementById("choices-container").style.display = "none";
+            document.getElementById("equation-container").style.display = "block";
+            generateEquation();
         }
 
-        function startGraphTask() {
-            document.getElementById('menuOptions').style.display = 'none';
-            document.getElementById('graphTask').style.display = 'block';
+        function showGraphs() {
+            document.getElementById("choices-container").style.display = "none";
+            document.getElementById("graph-container").style.display = "block";
+            generateGraph();
+        }
+
+        function generateEquation() {
+            const a = Math.floor(Math.random() * 10) + 1;
+            const b = Math.floor(Math.random() * 20) - 10;
+            const c = Math.floor(Math.random() * 20) - 10;
+            const equation = `${a}x + (${b}) = ${c}`;
+            document.getElementById("equation-task").innerText = equation;
+            document.getElementById("equation-answer").value = "";
         }
 
         function checkEquationAnswer() {
-            var answer = document.getElementById('equationAnswer').value;
-            if (answer == "5") {
-                document.getElementById('equationResult').innerText = "Правильна відповідь!";
-                document.getElementById('equationResult').className = "success";
+            const answer = parseFloat(document.getElementById("equation-answer").value);
+            const a = Math.floor(Math.random() * 10) + 1;
+            const b = Math.floor(Math.random() * 20) - 10;
+            const c = Math.floor(Math.random() * 20) - 10;
+            const correctAnswer = (c - b) / a;
+
+            if (answer === correctAnswer) {
+                correctAnswers++;
             } else {
-                document.getElementById('equationResult').innerText = "Неправильна відповідь!";
-                document.getElementById('equationResult').className = "error";
+                incorrectAnswers++;
             }
+
+            updateStatistics();
+        }
+
+        function generateGraph() {
+            // Генерація випадкового графіка (можна використовувати бібліотеки типу Chart.js або Plotly)
+            document.getElementById("graph").style.backgroundColor = "#4CAF50"; // Просто для прикладу
         }
 
         function checkGraphAnswer() {
-            var answer = document.getElementById('graphAnswer').value;
-            if (answer.toLowerCase() === "x^2" || answer.toLowerCase() === "x²") {
-                document.getElementById('graphResult').innerText = "Правильна відповідь!";
-                document.getElementById('graphResult').className = "success";
-            } else {
-                document.getElementById('graphResult').innerText = "Неправильна відповідь!";
-                document.getElementById('graphResult').className = "error";
-            }
+            const graphAnswer = document.getElementById("graph-answer").value;
+            // Логіка перевірки графіка
         }
 
         function toggleSettings() {
-            document.getElementById('settingsWindow').style.display = 'block';
+            document.getElementById("settings-modal").classList.toggle("active");
         }
 
         function closeSettings() {
-            document.getElementById('settingsWindow').style.display = 'none';
+            document.getElementById("settings-modal").classList.remove("active");
         }
 
-        function goToMainMenu() {
-            document.getElementById('startButton').style.display = 'block';
-            document.getElementById('menuOptions').style.display = 'none';
-            document.getElementById('settingsWindow').style.display = 'none';
-            document.getElementById('equationTask').style.display = 'none';
-            document.getElementById('graphTask').style.display = 'none';
+        function backToMain() {
+            document.querySelector(".container").style.display = "block";
+            document.getElementById("choices-container").style.display = "none";
+            document.getElementById("equation-container").style.display = "none";
+            document.getElementById("graph-container").style.display = "none";
+        }
+
+        function updateStatistics() {
+            const total = correctAnswers + incorrectAnswers;
+            const avg = total ? (correctAnswers / incorrectAnswers).toFixed(2) : 0;
+            document.getElementById("correct-stat").innerText = correctAnswers;
+            document.getElementById("incorrect-stat").innerText = incorrectAnswers;
+            document.getElementById("avg-stat").innerText = avg;
+        }
+
+        function changeLanguage() {
+            const language = document.getElementById("language").value;
+            // Зміна мови за допомогою змінних
         }
     </script>
 
