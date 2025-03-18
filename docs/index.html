@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Математичний сайт</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #f0f8ff, #ffecb3);
+            font-family: Arial, sans-serif;
+        }
+        .task-button {
+            font-size: 20px;
+            margin: 15px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .task-button:hover {
+            background-color: #45a049;
+        }
+        .hint {
+            display: none;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .statistics {
+            margin-top: 20px;
+        }
+        #hint {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container text-center" id="menu">
+    <h1>Головне меню</h1>
+    <button class="task-button" id="start-btn">Почати</button>
+</div>
+
+<div class="container text-center" id="task-menu" style="display: none;">
+    <h2>Виберіть тип завдання</h2>
+    <button class="task-button" id="equations-btn">Рівняння</button>
+    <button class="task-button" id="inequalities-btn">Нерівності</button>
+    <button class="task-button" id="graphs-btn">Графіки</button>
+</div>
+
+<div class="container text-center" id="task-container" style="display: none;">
+    <h3 id="task-title">Завдання</h3>
+    <div id="task-content"></div>
+    <input type="text" id="answer" class="form-control" placeholder="Введіть відповідь">
+    <button class="task-button" id="check-answer-btn">Перевірити</button>
+    <div id="hint" class="hint">Підказка: формули для розв'язку</div>
+    <button class="task-button" id="show-hint-btn">Підказка</button>
+</div>
+
+<div class="container text-center statistics">
+    <h4>Статистика</h4>
+    <p>Правильних відповідей: <span id="correct-answers">0</span></p>
+    <p>Неправильних відповідей: <span id="incorrect-answers">0</span></p>
+    <p>Правильні / Неправильні: <span id="ratio">0</span></p>
+</div>
+
+<!-- Налаштування та шестерня -->
+<div class="settings-container">
+    <button class="task-button" id="settings-btn">Налаштування</button>
+    <div class="settings" style="display: none;">
+        <h5>Мови</h5>
+        <button class="task-button" id="language-uk">Українська</button>
+        <button class="task-button" id="language-en">English</button>
+    </div>
+</div>
+
+<script>
+    let correctAnswers = 0;
+    let incorrectAnswers = 0;
+
+    $(document).ready(function() {
+        // Відкриття основного меню
+        $('#start-btn').click(function() {
+            $('#menu').hide();
+            $('#task-menu').show();
+        });
+
+        // Перехід до завдань
+        $('#equations-btn').click(function() {
+            loadTask('equations');
+        });
+        $('#inequalities-btn').click(function() {
+            loadTask('inequalities');
+        });
+        $('#graphs-btn').click(function() {
+            loadTask('graphs');
+        });
+
+        // Перевірка відповіді
+        $('#check-answer-btn').click(function() {
+            checkAnswer();
+        });
+
+        // Показ підказки
+        $('#show-hint-btn').click(function() {
+            $('#hint').fadeIn();
+        });
+
+        // Налаштування мови
+        $('#language-uk').click(function() {
+            alert('Мова змінена на українську!');
+        });
+        $('#language-en').click(function() {
+            alert('Language changed to English!');
+        });
+
+        // Показ налаштувань
+        $('#settings-btn').click(function() {
+            $('.settings').toggle();
+        });
+    });
+
+    function loadTask(type) {
+        $('#task-menu').hide();
+        $('#task-container').show();
+        if (type === 'equations') {
+            $('#task-title').text('Рівняння');
+            $('#task-content').html('<p>Розв’язати рівняння: x² - 4 = 0</p>');
+        } else if (type === 'inequalities') {
+            $('#task-title').text('Нерівності');
+            $('#task-content').html('<p>Розв’язати нерівність: x + 3 > 5</p>');
+        } else if (type === 'graphs') {
+            $('#task-title').text('Графіки');
+            $('#task-content').html('<p>Яка формула графіка: y = x²?</p>');
+        }
+    }
+
+    function checkAnswer() {
+        const answer = $('#answer').val().toLowerCase();
+        let correctAnswer = '';
+
+        if ($('#task-title').text() === 'Рівняння') {
+            correctAnswer = 'x = 2';
+        } else if ($('#task-title').text() === 'Нерівності') {
+            correctAnswer = 'x > 2';
+        } else if ($('#task-title').text() === 'Графіки') {
+            correctAnswer = 'y = x²';
+        }
+
+        if (answer === correctAnswer) {
+            correctAnswers++;
+        } else {
+            incorrectAnswers++;
+        }
+
+        updateStatistics();
+    }
+
+    function updateStatistics() {
+        $('#correct-answers').text(correctAnswers);
+        $('#incorrect-answers').text(incorrectAnswers);
+        $('#ratio').text((correctAnswers / (correctAnswers + incorrectAnswers)).toFixed(2));
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+</body>
+</html>
