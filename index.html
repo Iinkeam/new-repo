@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор рівнянь</title>
+    <title>Випадкове рівняння</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -15,15 +15,16 @@
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            transition: all 0.3s ease;
         }
 
         .container {
             background: linear-gradient(135deg, #6e7bff, #62d4f2);
-            padding: 30px;
+            padding: 40px;
             border-radius: 15px;
             box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 450px;
+            max-width: 600px;
             text-align: center;
             opacity: 0;
             animation: fadeIn 1s forwards;
@@ -36,7 +37,7 @@
 
         h2 {
             color: #fff;
-            font-size: 28px;
+            font-size: 32px;
             margin-bottom: 20px;
         }
 
@@ -56,13 +57,6 @@
             background-color: #fff;
             color: #333;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            animation: fadeInInput 1s 1s forwards;
-        }
-
-        @keyframes fadeInInput {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         button {
@@ -79,27 +73,6 @@
 
         button:hover {
             background-color: #4bb6d4;
-        }
-
-        #result {
-            font-size: 20px;
-            margin-top: 20px;
-            font-weight: bold;
-            opacity: 0;
-            animation: fadeInResult 1s 1.5s forwards;
-        }
-
-        @keyframes fadeInResult {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .success {
-            color: #28a745;
-        }
-
-        .error {
-            color: #dc3545;
         }
 
         .intro-screen {
@@ -127,269 +100,233 @@
             font-size: 36px;
             font-weight: bold;
             text-align: center;
-            animation: typing 2s steps(30) 1, blink 0.75s step-end infinite;
         }
 
-        @keyframes typing {
-            from {
-                width: 0;
-            }
-            to {
-                width: 22ch;
-            }
-        }
-
-        @keyframes blink {
-            50% {
-                border-color: transparent;
-            }
-        }
-
-        .formula-window {
-            display: none;
+        .start-button {
             position: absolute;
-            background: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            top: 20px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            text-align: left;
-            animation: fadeInFormula 0.5s forwards;
+            transform: translate(-50%, -50%);
+            background-color: #ffcc00;
+            padding: 20px 40px;
+            font-size: 24px;
+            color: #fff;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
 
-        @keyframes fadeInFormula {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .start-button:hover {
+            background-color: #ffb300;
         }
 
-        .show-formula {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            padding: 10px 20px;
-            background-color: #ff7043;
+        .menu-options {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .menu-option {
+            background-color: #62d4f2;
             color: white;
-            font-size: 16px;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu-option:hover {
+            background-color: #4bb6d4;
+        }
+
+        .settings-button {
+            position: absolute;
+            top: 10px;
+            right: 50px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .settings-button:hover {
+            color: #ff7043;
+        }
+
+        .settings-window {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+
+        .settings-window input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .settings-window button {
+            padding: 12px;
+            margin-top: 20px;
+            background-color: #62d4f2;
+            color: white;
+            border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
 
-        .show-formula:hover {
-            background-color: #e64a19;
+        .settings-window button:hover {
+            background-color: #4bb6d4;
         }
 
-        .formulas {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 30px;
-            animation: fadeInHints 1s forwards;
+        .graph-window {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            text-align: center;
         }
 
-        @keyframes fadeInHints {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .graph-button {
+            background-color: #62d4f2;
+            color: white;
+            font-size: 18px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
         }
 
-        .new-task-btn {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
+        .graph-button:hover {
+            background-color: #4bb6d4;
+        }
+
+        .back-to-menu {
+            margin-top: 20px;
             background-color: #ff7043;
             color: white;
             padding: 12px 25px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
         }
 
-        .new-task-btn:hover {
+        .back-to-menu:hover {
             background-color: #e64a19;
-        }
-
-        .language-selector {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            background-color: #62d4f2;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .language-selector:hover {
-            background-color: #4bb6d4;
-        }
-
-        .statistics {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .statistics div {
-            margin: 5px 0;
-        }
-
-        .statistics .ratio {
-            font-weight: bold;
         }
 
     </style>
 </head>
 <body>
 
-    <!-- Заставка -->
     <div class="intro-screen">
         <div class="intro-text">Генератор рівнянь [.]</div>
     </div>
 
-    <!-- Вибір мови -->
-    <div class="language-selector" onclick="toggleLanguage()">Змінити мову</div>
+    <!-- Кнопка Почати -->
+    <div class="start-button" id="startButton" onclick="showMenuOptions()">Почати</div>
 
-    <div class="container">
-        <h2>Генератор рівнянь</h2>
-        <p id="question">Натисни "Нове рівняння", щоб почати</p>
-        <input type="text" id="answer" placeholder="Введіть відповідь (розділяйте комами)">
-        <button onclick="checkAnswer()">Перевірити</button>
-        <button onclick="generateEquation()">Нове рівняння</button>
-        <p id="result"></p>
-
-        <div class="statistics">
-            <div>Правильних відповідей: <span id="correctCount">0</span></div>
-            <div>Неправильних відповідей: <span id="incorrectCount">0</span></div>
-            <div>Середнє правильних/неправильних: <span id="ratio">0</span></div>
-        </div>
+    <!-- Вибір завдання -->
+    <div class="menu-options" id="menuOptions">
+        <div class="menu-option" onclick="startEquationTask()">Рівняння</div>
+        <div class="menu-option" onclick="startGraphTask()">Графіки</div>
     </div>
 
-    <div class="show-formula" onclick="toggleHints()">Підказка</div>
+    <!-- Налаштування -->
+    <div class="settings-button" onclick="toggleSettings()">⚙️ Налаштування</div>
 
-    <div class="hint-content" id="hintContent">
-        <div class="formulas">
-            <div class="formula-card">
-                <h3>Дискримінант</h3>
-                <p>D = b² - 4ac</p>
-            </div>
-            <div class="formula-card">
-                <h3>Теорема Вієта</h3>
-                <p>x₁ + x₂ = -b/a, x₁ * x₂ = c/a</p>
-            </div>
-            <div class="formula-card">
-                <h3>Скорочене множення</h3>
-                <p>(a + b)² = a² + 2ab + b²</p>
-            </div>
-            <div class="formula-card">
-                <h3>Формула коренів</h3>
-                <p>x = (-b ± √D) / 2a</p>
-            </div>
-            <div class="formula-card">
-                <h3>Теорема Піфагора</h3>
-                <p>a² + b² = c²</p>
-            </div>
-            <div class="formula-card">
-                <h3>Формула площі кола</h3>
-                <p>A = πr²</p>
-            </div>
-        </div>
+    <div class="settings-window" id="settingsWindow">
+        <button onclick="goToMainMenu()">Головне меню</button>
+        <button onclick="closeSettings()">Закрити</button>
+    </div>
+
+    <!-- Завдання для рівнянь -->
+    <div id="equationTask" style="display:none;">
+        <h2>Розв'язати рівняння: x + 5 = 10</h2>
+        <input type="text" id="equationAnswer" placeholder="Введіть відповідь">
+        <button onclick="checkEquationAnswer()">Перевірити</button>
+        <p id="equationResult"></p>
+    </div>
+
+    <!-- Завдання для графіків -->
+    <div id="graphTask" style="display:none;">
+        <h2>Намалюйте графік функції y = x²</h2>
+        <input type="text" id="graphAnswer" placeholder="Введіть функцію">
+        <button onclick="checkGraphAnswer()">Перевірити</button>
+        <p id="graphResult"></p>
     </div>
 
     <script>
-        let equationType, a, b, c, correctAnswers;
-        let correctCount = 0; // Лічильник правильних відповідей
-        let incorrectCount = 0; // Лічильник неправильних відповідей
-        let language = "uk"; // Поточна мова (за замовчуванням українська)
-
-        function generateEquation() {
-            let type = Math.random() < 0.5 ? "linear" : "quadratic"; // Випадковий вибір типу рівняння
-            equationType = type;
-
-            if (type === "linear") {
-                // Лінійне рівняння: ax + b = c
-                a = Math.floor(Math.random() * 10) + 1;  // Від 1 до 10
-                b = Math.floor(Math.random() * 20) - 10; // Від -10 до 10
-                c = Math.floor(Math.random() * 20) - 10;
-                correctAnswers = [(c - b) / a]; // x = (c - b) / a
-                document.getElementById("question").innerText = `${a}x + (${b}) = ${c}`;
-            } 
-            else if (type === "quadratic") {
-                // Квадратне рівняння: ax^2 + bx + c = 0
-                let x1 = Math.floor(Math.random() * 10) - 5; // Від -5 до 5
-                let x2 = Math.floor(Math.random() * 10) - 5;
-                a = Math.floor(Math.random() * 3) + 1; // Від 1 до 3
-                b = -a * (x1 + x2);
-                c = a * x1 * x2;
-                correctAnswers = [x1, x2].sort((x, y) => x - y); // Відповіді у зростаючому порядку
-                document.getElementById("question").innerText = `${a}x² + (${b})x + (${c}) = 0`;
-            }
-
-            document.getElementById("result").innerText = "";
-            document.getElementById("answer").value = "";
+        function showMenuOptions() {
+            document.getElementById('startButton').style.display = 'none';
+            document.getElementById('menuOptions').style.display = 'flex';
         }
 
-        function checkAnswer() {
-            let userAnswer = parseAnswer(document.getElementById("answer").value.trim());
-            userAnswer.sort((x, y) => x - y); // Сортуємо, щоб порядок не впливав
+        function startEquationTask() {
+            document.getElementById('menuOptions').style.display = 'none';
+            document.getElementById('equationTask').style.display = 'block';
+        }
 
-            let resultMessage = document.getElementById("result");
+        function startGraphTask() {
+            document.getElementById('menuOptions').style.display = 'none';
+            document.getElementById('graphTask').style.display = 'block';
+        }
 
-            if (JSON.stringify(userAnswer) === JSON.stringify(correctAnswers)) {
-                correctCount++;
-                resultMessage.innerText = "Правильно!";
-                resultMessage.className = "success";
+        function checkEquationAnswer() {
+            var answer = document.getElementById('equationAnswer').value;
+            if (answer == "5") {
+                document.getElementById('equationResult').innerText = "Правильна відповідь!";
+                document.getElementById('equationResult').className = "success";
             } else {
-                incorrectCount++;
-                resultMessage.innerText = `Неправильно. Правильна відповідь: ${correctAnswers.join(", ")}`;
-                resultMessage.className = "error";
+                document.getElementById('equationResult').innerText = "Неправильна відповідь!";
+                document.getElementById('equationResult').className = "error";
             }
-
-            // Оновлюємо статистику
-            updateStatistics();
         }
 
-        function parseAnswer(answer) {
-            return answer.split(",").map(val => {
-                if (val.includes("/")) {
-                    let [numerator, denominator] = val.split("/").map(Number);
-                    return numerator / denominator;
-                }
-                return parseFloat(val.replace(",", ".")); // Заміняємо кому на крапку
-            });
-        }
-
-        function updateStatistics() {
-            document.getElementById("correctCount").innerText = correctCount;
-            document.getElementById("incorrectCount").innerText = incorrectCount;
-
-            let ratio = incorrectCount === 0 ? correctCount : (correctCount / incorrectCount).toFixed(2);
-            document.getElementById("ratio").innerText = ratio;
-        }
-
-        function toggleHints() {
-            const hintContent = document.getElementById("hintContent");
-            hintContent.style.display = hintContent.style.display === "none" ? "block" : "none";
-        }
-
-        function toggleLanguage() {
-            if (language === "uk") {
-                language = "en";
-                document.getElementById("question").innerText = "Press 'New Equation' to start";
-                document.querySelector("h2").innerText = "Equation Generator";
-                document.querySelector("button:nth-child(1)").innerText = "Check Answer";
-                document.querySelector("button:nth-child(2)").innerText = "New Equation";
-                document.querySelector(".show-formula").innerText = "Hint";
+        function checkGraphAnswer() {
+            var answer = document.getElementById('graphAnswer').value;
+            if (answer.toLowerCase() === "x^2" || answer.toLowerCase() === "x²") {
+                document.getElementById('graphResult').innerText = "Правильна відповідь!";
+                document.getElementById('graphResult').className = "success";
             } else {
-                language = "uk";
-                document.getElementById("question").innerText = "Натисни 'Нове рівняння', щоб почати";
-                document.querySelector("h2").innerText = "Генератор рівнянь";
-                document.querySelector("button:nth-child(1)").innerText = "Перевірити";
-                document.querySelector("button:nth-child(2)").innerText = "Нове рівняння";
-                document.querySelector(".show-formula").innerText = "Підказка";
+                document.getElementById('graphResult').innerText = "Неправильна відповідь!";
+                document.getElementById('graphResult').className = "error";
             }
+        }
+
+        function toggleSettings() {
+            document.getElementById('settingsWindow').style.display = 'block';
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsWindow').style.display = 'none';
+        }
+
+        function goToMainMenu() {
+            document.getElementById('startButton').style.display = 'block';
+            document.getElementById('menuOptions').style.display = 'none';
+            document.getElementById('settingsWindow').style.display = 'none';
+            document.getElementById('equationTask').style.display = 'none';
+            document.getElementById('graphTask').style.display = 'none';
         }
     </script>
 
