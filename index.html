@@ -3,9 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор Рівнянь</title>
+    <title>Генератор рівнянь</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        .container { max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+        input, button { margin-top: 10px; padding: 10px; font-size: 16px; }
+    </style>
 </head>
 <body>
-    <h1>Привіт! Це ваш генератор рівнянь.</h1>
+
+    <div class="container">
+        <h2>Генератор рівнянь</h2>
+        <p id="question">Натисни "Нове рівняння", щоб почати</p>
+        <input type="text" id="answer" placeholder="Введіть відповідь (розділяйте комами)">
+        <button onclick="checkAnswer()">Перевірити</button>
+        <button onclick="generateEquation()">Нове рівняння</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        let equationType, a, b, c, correctAnswers;
+
+        function generateEquation() {
+            let type = Math.random() < 0.5 ? "linear" : "quadratic"; // Випадковий вибір типу рівняння
+            equationType = type;
+
+            if (type === "linear") {
+                // Лінійне рівняння: ax + b = c
+                a = Math.floor(Math.random() * 10) + 1;  // Від 1 до 10
+                b = Math.floor(Math.random() * 20) - 10; // Від -10 до 10
+                c = Math.floor(Math.random() * 20) - 10;
+                correctAnswers = [(c - b) / a]; // x = (c - b) / a
+                document.getElementById("question").innerText = `${a}x + (${b}) = ${c}`;
+            } 
+            else if (type === "quadratic") {
+                // Квадратне рівняння: ax^2 + bx + c = 0
+                let x1 = Math.floor(Math.random() * 10) - 5; // Від -5 до 5
+                let x2 = Math.floor(Math.random() * 10) - 5;
+                a = Math.floor(Math.random() * 3) + 1; // Від 1 до 3
+                b = -a * (x1 + x2);
+                c = a * x1 * x2;
+                correctAnswers = [x1, x2].sort((x, y) => x - y); // Відповіді у зростаючому порядку
+                document.getElementById("question").innerText = `${a}x² + (${b})x + (${c}) = 0`;
+            }
+
+            document.getElementById("result").innerText = "";
+            document.getElementById("answer").value = "";
+        }
+
+        function checkAnswer() {
+            let userAnswer = document.getElementById("answer").value.trim().split(",").map(x => parseFloat(x));
+            userAnswer.sort((x, y) => x - y); // Сортуємо, щоб порядок не впливав
+
+            if (JSON.stringify(userAnswer) === JSON.stringify(correctAnswers)) {
+                document.getElementById("result").innerText = "Правильно!";
+                document.getElementById("result").style.color = "green";
+            } else {
+                document.getElementById("result").innerText = `Неправильно. Правильна відповідь: ${correctAnswers.join(", ")}`;
+                document.getElementById("result").style.color = "red";
+            }
+        }
+
+        generateEquation(); // Генеруємо перше рівняння при завантаженні сторінки
+    </script>
+
 </body>
 </html>
