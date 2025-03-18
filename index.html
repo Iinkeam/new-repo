@@ -5,9 +5,236 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Генератор рівнянь</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        .container { max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
-        input, button { margin-top: 10px; padding: 10px; font-size: 16px; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            background: linear-gradient(135deg, #6e7bff, #62d4f2);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #fff;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            animation: fadeInInput 1s 1s forwards;
+        }
+
+        @keyframes fadeInInput {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #62d4f2;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #4bb6d4;
+        }
+
+        #result {
+            font-size: 20px;
+            margin-top: 20px;
+            font-weight: bold;
+            opacity: 0;
+            animation: fadeInResult 1s 1.5s forwards;
+        }
+
+        @keyframes fadeInResult {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success {
+            color: #28a745;
+        }
+
+        .error {
+            color: #dc3545;
+        }
+
+        .formula-window {
+            display: none;
+            position: absolute;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: left;
+            animation: fadeInFormula 0.5s forwards;
+        }
+
+        @keyframes fadeInFormula {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .formula-content {
+            margin-bottom: 15px;
+        }
+
+        .show-formula {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #ff7043;
+            color: white;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .show-formula:hover {
+            background-color: #e64a19;
+        }
+
+        .formulas {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .formula-card {
+            background-color: #fff;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 150px;
+            text-align: center;
+        }
+
+        .formula-card h3 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .formula-card p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .new-task-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: #ff7043;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .new-task-btn:hover {
+            background-color: #e64a19;
+        }
+
+        #graphTask {
+            display: none;
+            padding: 30px;
+            background: linear-gradient(135deg, #ff7043, #ffcc80);
+            border-radius: 15px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            animation: fadeInGraph 1s forwards;
+        }
+
+        @keyframes fadeInGraph {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .formula-card {
+            background-color: #fff;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 150px;
+            text-align: center;
+        }
+
+        .formula-card h3 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .formula-card p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .show-hint {
+            color: #ff7043;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            text-decoration: underline;
+        }
+
+        .hint-content {
+            display: none;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -20,6 +247,408 @@
         <button onclick="generateEquation()">Нове рівняння</button>
         <p id="result"></p>
     </div>
+
+    <div class="show-hint" onclick="toggleHints()">Підказка</div>
+
+    <div class="hint-content" id="hintContent">
+        <div class="formulas">
+            <div class="formula-card">
+                <h3>Дискримінант</h3>
+                <p>D = b² - 4ac</p>
+            </div>
+            <div class="formula-card">
+                <h3>Теорема Вієта</h3>
+                <p>x₁ + x₂ = -b/a, x₁ * x₂ = c/a</p>
+            </div>
+            <div class="formula-card">
+                <h3>Скорочене множення</h3>
+                <p>(a + b)² = a² + 2ab + b²</p>
+            </div>
+            <div class="formula-card">
+                <h3>Формула коренів</h3>
+                <p>x = (-b ± √D) / 2a</p>
+            </div>
+            <div class="formula-card">
+                <h3>Теорема Піфагора</h3>
+                <p>a² + b² = c²</p>
+            </div>
+            <div class="formula-card">
+                <h3>Формула площі кола</h3>
+                <p>A = πr²</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="graphTask">
+        <h2>Завдання: Напишіть рівняння за графіком</h2>
+        <p>Визначте коефіцієнти рівняння прямої чи параболи по заданому графіку.</p>
+        <button onclick="generateGraphTask()">Генерувати новий графік</button>
+    </div>
+
+    <div class="new-task-btn" onclick="showGraphTask()">Перехід до графіку</div>
+
+    <script>
+        let equationType, a, b, c, correctAnswers;
+
+        function generateEquation() {
+            let type = Math.random() < 0.5 ? "linear" : "quadratic"; // Випадковий вибір типу рівняння
+            equationType = type;
+
+            if (type === "linear") {
+                // Лінійне рівняння: ax + b = c
+                a = Math.floor(Math.random() * 10) + 1;  // Від 1 до 10
+                b = Math.floor(Math.random() * 20) - 10; // Від -10 до 10
+                c = Math.floor(Math.random() * 20) - 10;
+                correctAnswers = [(c - b) / a]; // x = (c - b) / a
+                document.getElementById("question").innerText = `${a}x + (${b}) = ${c}`;
+            } 
+            else if (type === "quadratic") {
+                // Квадратне рівняння: ax^2 + bx + c = 0
+                let x1 = Math.floor(Math.random() * 10) - 5; // Від -5 до 5
+                let x2 = Math.floor(Math.random() * 10) - 5;
+                a = Math.floor(Math.random() * 3) + 1; // Від 1 до 3
+                b = -a * (x1 + x2);
+                c = a * x1 * x2;
+                correctAnswers = [x1, x2].sort((x, y) => x - y); // Відповіді у зростаючому порядку
+                document.getElementById("question").innerText = `${a}x² + (${b})x + (${c}) = 0`;
+            } else if (type === "radical") {
+                // Рівняння з коренями: √(ax + b) = c
+                a = Math.floor(Math.random() * 5) + 1;
+                b = Math.floor(Math.random() * 10) - 5;
+                c = Math.floor(Math.random() * 10) + 1;
+                correctAnswers = [(c * c - b) / a];
+                document.getElementById("question").innerText = `√(${a}x + (${b})) = ${c}`;
+            } else if (type === "fraction") {
+                // Рівняння з дробами: (ax + b) / c = d
+                a = Math.floor(Math.random() * 5) + 1;
+                b = Math.floor(Math.random() * 10) - 5;
+                c = Math.floor(Math.random() * 10) + 1;
+                let d = Math.floor(Math.random() * 10) + 1;
+                correctAnswers = [(d * c - b) / a];
+                document.getElementById("question").innerText = `(${a}x + (${b})) / ${c} = ${d}`;
+            }
+
+            document.getElementById("result").innerText = "";
+            document.getElementById("answer").value = "";
+        }
+
+        function checkAnswer() {
+            let userAnswer = document.getElementById("answer").value.trim().split(",").map(x => parseFloat(x));
+            userAnswer.sort((x, y) => x - y); // Сортуємо, щоб порядок не впливав
+
+            let resultMessage = document.getElementById("result");
+
+            if (JSON.stringify(userAnswer) === JSON.stringify(correctAnswers)) {
+                resultMessage.innerText = "Правильно!";
+                resultMessage.className = "success";
+            } else {
+                resultMessage.innerText = `Неправильно. Правильна відповідь: ${correctAnswers.join(", ")}`;
+                resultMessage.className = "error";
+            }
+        }
+
+        function toggleHints() {
+            const hintContent = document.getElementById("hintContent");
+            hintContent.style.display = hintContent.style.display === "none" ? "block" : "none";
+        }
+
+        function showGraphTask() {
+            document.getElementById("graphTask").style.display = "block";
+            document.querySelector(".container").style.display = "none";
+        }
+
+        function generateGraphTask() {
+            // Можна додати код для генерації графіків або просто завдання, де користувач визначає рівняння по графіку
+            alert("Тут буде ваш графік!");
+        }
+
+        generateEquation(); // Генеруємо перше рівняння при завантаженні сторінки
+    </script>
+
+</body>
+</html>
+Оновлення:
+Кнопка "Підказка": При натисканні на неї відкривається/закривається секція з формулами.
+Секція підказок: Формули, як і раніше, містяться в окремому блокі .hint-content, який показується тільки після натискання на кнопку "Підказка".
+
+
+
+
+
+
+Ви сказали:
+підсумуй усе і дай мені фінальний результат коду
+Програма ChatGPT сказала:
+Ось фінальний результат коду, який включає всі ваші вимоги: анімації при генерації рівняння, перевірка правильності відповіді, кнопка для відображення підказок з формулами (такими як дискримінант, теорема Вієта, скорочене множення), і багато іншого.
+
+Ось фінальний код:
+html
+Копіювати
+Редагувати
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор рівнянь</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            background: linear-gradient(135deg, #6e7bff, #62d4f2);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #fff;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            animation: fadeInInput 1s 1s forwards;
+        }
+
+        @keyframes fadeInInput {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #62d4f2;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #4bb6d4;
+        }
+
+        #result {
+            font-size: 20px;
+            margin-top: 20px;
+            font-weight: bold;
+            opacity: 0;
+            animation: fadeInResult 1s 1.5s forwards;
+        }
+
+        @keyframes fadeInResult {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success {
+            color: #28a745;
+        }
+
+        .error {
+            color: #dc3545;
+        }
+
+        .formula-window {
+            display: none;
+            position: absolute;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: left;
+            animation: fadeInFormula 0.5s forwards;
+        }
+
+        @keyframes fadeInFormula {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .show-formula {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #ff7043;
+            color: white;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .show-formula:hover {
+            background-color: #e64a19;
+        }
+
+        .formulas {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .formula-card {
+            background-color: #fff;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 150px;
+            text-align: center;
+        }
+
+        .formula-card h3 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .formula-card p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .new-task-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: #ff7043;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .new-task-btn:hover {
+            background-color: #e64a19;
+        }
+
+        #graphTask {
+            display: none;
+            padding: 30px;
+            background: linear-gradient(135deg, #ff7043, #ffcc80);
+            border-radius: 15px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            animation: fadeInGraph 1s forwards;
+        }
+
+        @keyframes fadeInGraph {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .show-hint {
+            color: #ff7043;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            text-decoration: underline;
+        }
+
+        .hint-content {
+            display: none;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Генератор рівнянь</h2>
+        <p id="question">Натисни "Нове рівняння", щоб почати</p>
+        <input type="text" id="answer" placeholder="Введіть відповідь (розділяйте комами)">
+        <button onclick="checkAnswer()">Перевірити</button>
+        <button onclick="generateEquation()">Нове рівняння</button>
+        <p id="result"></p>
+    </div>
+
+    <div class="show-hint" onclick="toggleHints()">Підказка</div>
+
+    <div class="hint-content" id="hintContent">
+        <div class="formulas">
+            <div class="formula-card">
+                <h3>Дискримінант</h3>
+                <p>D = b² - 4ac</p>
+            </div>
+            <div class="formula-card">
+                <h3>Теорема Вієта</h3>
+                <p>x₁ + x₂ = -b/a, x₁ * x₂ = c/a</p>
+            </div>
+            <div class="formula-card">
+                <h3>Скорочене множення</h3>
+                <p>(a + b)² = a² + 2ab + b²</p>
+            </div>
+            <div class="formula-card">
+                <h3>Формула коренів</h3>
+                <p>x = (-b ± √D) / 2a</p>
+            </div>
+            <div class="formula-card">
+                <h3>Теорема Піфагора</h3>
+                <p>a² + b² = c²</p>
+            </div>
+            <div class="formula-card">
+                <h3>Формула площі кола</h3>
+                <p>A = πr²</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="graphTask">
+        <h2>Завдання: Напишіть рівняння за графіком</h2>
+        <p>Визначте коефіцієнти рівняння прямої чи параболи по заданому графіку.</p>
+        <button onclick="generateGraphTask()">Генерувати новий графік</button>
+    </div>
+
+    <div class="new-task-btn" onclick="showGraphTask()">Перехід до графіку</div>
 
     <script>
         let equationType, a, b, c, correctAnswers;
@@ -55,17 +684,7 @@
             let userAnswer = document.getElementById("answer").value.trim().split(",").map(x => parseFloat(x));
             userAnswer.sort((x, y) => x - y); // Сортуємо, щоб порядок не впливав
 
+            let resultMessage = document.getElementById("result");
+
             if (JSON.stringify(userAnswer) === JSON.stringify(correctAnswers)) {
-                document.getElementById("result").innerText = "Правильно!";
-                document.getElementById("result").style.color = "green";
-            } else {
-                document.getElementById("result").innerText = `Неправильно. Правильна відповідь: ${correctAnswers.join(", ")}`;
-                document.getElementById("result").style.color = "red";
-            }
-        }
-
-        generateEquation(); // Генеруємо перше рівняння при завантаженні сторінки
-    </script>
-
-</body>
-</html>
+                resultMessage
